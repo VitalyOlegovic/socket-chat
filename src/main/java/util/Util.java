@@ -67,64 +67,6 @@ public class Util {
 	public static void stampa(double o){
 		System.out.println(o);
 	}
-	
-	
-	public static void stampap(Object o){
-		System.out.print(o);
-	}
-	
-	public static void stampap(byte o){
-		System.out.println(o);
-	}
-	
-	public static void stampap(short o){
-		System.out.print(o);
-	}
-	
-	public static void stampap(int o){
-		System.out.print(o);
-	}
-	
-	public static void stampap(long o){
-		System.out.print(o);
-	}
-	
-	public static void stampap(char o){
-		System.out.print(o);
-	}
-	
-	public static void stampap(boolean o){
-		System.out.print(o);
-	}
-	
-	public static void stampap(float o){
-		System.out.print(o);
-	}
-	
-	public static void stampap(double o){
-		System.out.print(o);
-	}
-	
-	
-	
-	public static String riceviRiga(InputStream is) throws IOException{
-
-		StringBuilder line=new StringBuilder();
-		
-		int c=is.read();
-		line.append((char)c);
-
-		while(is.available()>0){
-			c=is.read();
-			line.append((char)c);
-		}
-
-		return line.toString();
-	}
-	
-	public static String riceviRiga(BufferedReader br) throws IOException{
-		return br.readLine();
-	}
 
 	public static void spedisciRiga(OutputStream os,String str){
 		PrintWriter out = new PrintWriter(os, true);

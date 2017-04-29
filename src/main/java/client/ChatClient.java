@@ -1,36 +1,62 @@
 package client;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import util.Util;
 
 /***
- * 
- * @author Ezio Sperduto
  *
+ * @author Ezio Sperduto
+ * @author vitalij
  */
 public class ChatClient {
 
-	
-	public static void main(String...a){
-		String ipServer="127.0.0.1";
-		
-		try(Socket s = new Socket( ipServer, Util.PORTA_SERVER)) {
+	private BufferedReader input;
+
+	public ChatClient(String serverIp, int serverPort){
+		try(Socket s = new Socket( serverIp, serverPort)) {
 			PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
-			
-			pw.println("Prova");
-			
+			input = new BufferedReader( new InputStreamReader( s.getInputStream() ) );
+			ScheduledThreadPoolExecutor e = new ScheduledThreadPoolExecutor(1);
+			e.scheduleAtFixedRate(this::readAndPrint, 100, 100, TimeUnit.MILLISECONDS);
+
+			Scanner scanner = new Scanner(System.in);
+			while(true){
+				String line = scanner.nextLine();
+				pw.println(line);
+				Thread.sleep(100);
+			}
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		
 	}
-	
+
+	public static void main(String...a){
+		String ipServer="127.0.0.1";
+
+		ChatClient c = new ChatClient(ipServer, Util.PORTA_SERVER);
+	}
+
+	private void readAndPrint(){
+		try {
+			String str = input.readLine();
+			System.out.println(str);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

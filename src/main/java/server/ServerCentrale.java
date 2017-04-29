@@ -12,16 +12,16 @@ import java.util.Set;
 import util.Util;
 
 /***
- * 
- * @author Ezio Sperduto
  *
+ * @author Ezio Sperduto
+ * @author vitalij
  */
 public class ServerCentrale {
 
 	public static Set<ServerFiglio> figli=new HashSet<>();
 	private static int numFigli = 0;
 	public final static String SERVER_NAME = "SERVER";
-	
+
 	public static void main(String...args){
 		stampa(pref(SERVER_NAME)+"START CHATSERVER!");
 		ServerSocket ss=null;
@@ -32,20 +32,20 @@ public class ServerCentrale {
 				Socket socket = ss.accept();
 
 				numFigli++;
-				String nomeFiglio = "CLIENT"+numFigli;
+				String nomeFiglio = "CLIENT" + numFigli;
 				ServerFiglio serverFiglio = new ServerFiglio(socket,nomeFiglio);
 				figli.add(serverFiglio);
 
 				new Thread(serverFiglio).start();			// lancio figlio
 			}
 		}catch(Exception e){
-			stampa(pref(SERVER_NAME)+"Errore improvviso in ServerCentrale:");
+			stampa( pref(SERVER_NAME) + "Errore improvviso in ServerCentrale:" );
 			e.printStackTrace();
 			System.exit(0);
 		}finally{
 			try{
 				ss.close();
-			}catch(IOException e){}			
+			}catch(IOException e){}
 		}
 		stampa(pref(SERVER_NAME)+"STOP CHATSERVER!");
 	}
