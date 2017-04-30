@@ -16,32 +16,30 @@ import java.util.concurrent.TimeUnit;
  * @author Ezio Sperduto
  * @author vitalij
  */
-public class ServerFiglio implements Runnable {
+public class ClientManager {
 
+    private MainServer mainServer;
 	private Socket socket;
 	private PrintWriter printWriter;
 	BufferedReader input;
 
 	private String name;
 
-	public ServerFiglio(Socket s,String nome){
-		socket=s;
-		setName(nome);
+	public ClientManager(Socket s, String nome, MainServer mainServer){
+	    this.mainServer = mainServer;
+		socket = s;
+		this.name = nome;
+		init();
 	}
 
-	@Override
-	public void run() {
-
-		stampa( pref( ServerCentrale.SERVER_NAME) + "ENTRA " + getName() );
-		
+	public void init() {
+		stampa( pref( MainServer.SERVER_NAME) + "ENTRA " + getName() );
 
 		try {
 			input = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
 			printWriter = new PrintWriter(socket.getOutputStream(), true);
-			broadcast( pref( ServerCentrale.SERVER_NAME) + "ENTRA " + getName() );
-			ScheduledThreadPoolExecutor e = new ScheduledThreadPoolExecutor(1);
-			e.scheduleAtFixedRate(this::readAndRun, 100, 100, TimeUnit.MILLISECONDS);
-
+			mainServer.broadcast( pref( MainServer.SERVER_NAME) + "ENTRA " + getName() );
+			mainServer.getExecutor().scheduleAtFixedRate(this::readAndRun, 100, 100, TimeUnit.MILLISECONDS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -59,10 +57,8 @@ public class ServerFiglio implements Runnable {
 		}
 	}
 
-	void eseguiComando(String str){
-
+	void eseguiComando(String str) throws IOException {
 		String[] tokens = str.split(" ");
-
 		String comando = tokens[0];
 
 		switch(comando){
@@ -78,33 +74,27 @@ public class ServerFiglio implements Runnable {
 
 			// cambio nome client (nick)
 			case "/nick":
-				stampa( pref( ServerCentrale.SERVER_NAME) + "CAMBIO NICK SU " + getName() + " -> " + tokens[1] );
-				broadcast( pref( ServerCentrale.SERVER_NAME ) + "CAMBIO NICK SU " + getName() + " -> " + tokens[1] );
-				setName( tokens[1] );
+				stampa( pref( MainServer.SERVER_NAME) + "CAMBIO NICK SU " + getName() + " -> " + tokens[1] );
+				mainServer.broadcast( pref( MainServer.SERVER_NAME ) + "CAMBIO NICK SU " + getName() + " -> " + tokens[1] );
+				name = tokens[1];
 				break;
 
 			// nessun comando: solo stampare
 			default:
 				stampa(pref(getName())+str);
-				broadcast(pref(getName())+str);
+				mainServer.broadcast(pref(getName())+str);
 				break;
 		}
 
 	}
 
 
-	void broadcast(String str){
-		ServerCentrale.figli.forEach( (ServerFiglio sf) -> sf.printWriter.println(str) );
-	}
-
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-
+    public PrintWriter getPrintWriter() {
+        return printWriter;
+    }
 }

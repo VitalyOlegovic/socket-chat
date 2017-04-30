@@ -53,7 +53,9 @@ public class ChatClient {
 	private void readAndPrint(){
 		try {
 			String str = input.readLine();
-			System.out.println(str);
+			if(str != null) {
+                System.out.println(str);
+            }
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

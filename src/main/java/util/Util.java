@@ -17,15 +17,12 @@ public class Util {
 
 	public static final int PORTA_SERVER = 4999; 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-	
 
 	public static String adesso(){
 		return "["+sdf.format(new Date())+"]";
 	}
 	
 	public static String pref(String chi){
-		
-		
 		for(int i=chi.length();i<=10;i++)
 			chi+="-";
 		
@@ -68,8 +65,4 @@ public class Util {
 		System.out.println(o);
 	}
 
-	public static void spedisciRiga(OutputStream os,String str){
-		PrintWriter out = new PrintWriter(os, true);
-		out.println(str);
-	}
 }
