@@ -12,34 +12,30 @@ import java.util.concurrent.TimeUnit;
 
 import util.Util;
 
-/***
- *
- * @author Ezio Sperduto
- * @author vitalij
- */
 public class ChatClient {
 
 	private BufferedReader input;
 
 	public ChatClient(String serverIp, int serverPort){
-		try(Socket s = new Socket( serverIp, serverPort)) {
+		try(
+		        Socket s = new Socket( serverIp, serverPort)
+        ) {
 			PrintWriter pw = new PrintWriter(s.getOutputStream(), true);
 			input = new BufferedReader( new InputStreamReader( s.getInputStream() ) );
 			ScheduledThreadPoolExecutor e = new ScheduledThreadPoolExecutor(1);
-			e.scheduleAtFixedRate(this::readAndPrint, 100, 100, TimeUnit.MILLISECONDS);
+
+			ClientRunnable cr = new ClientRunnable(input);
+			e.scheduleAtFixedRate(cr, 100, 100, TimeUnit.MILLISECONDS);
 
 			Scanner scanner = new Scanner(System.in);
 			while(true){
 				String line = scanner.nextLine();
 				pw.println(line);
-				Thread.sleep(100);
 			}
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
@@ -48,17 +44,6 @@ public class ChatClient {
 		String ipServer="127.0.0.1";
 
 		ChatClient c = new ChatClient(ipServer, Util.PORTA_SERVER);
-	}
-
-	private void readAndPrint(){
-		try {
-			String str = input.readLine();
-			if(str != null) {
-                System.out.println(str);
-            }
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 }
