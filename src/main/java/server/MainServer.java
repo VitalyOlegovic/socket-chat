@@ -21,7 +21,7 @@ public class MainServer {
     private ServerSocket serverSocket = null;
     private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(10);
 
-    public static void main(String... args){
+    public static void main(String[] args){
         MainServer mainServer = new MainServer();
     }
 

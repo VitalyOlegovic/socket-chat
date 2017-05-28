@@ -5,16 +5,16 @@ import java.io.IOException;
 
 public class ClientRunnable implements Runnable{
 
-    private BufferedReader input;
+    private BufferedReader br;
 
     public ClientRunnable(BufferedReader input){
-        this.input = input;
+        this.br = input;
     }
 
     @Override
     public void run() {
         try {
-            String str = input.readLine();
+            String str = br.readLine();
             if(str != null) {
                 System.out.println(str);
             }
