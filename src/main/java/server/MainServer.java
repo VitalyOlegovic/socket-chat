@@ -34,9 +34,7 @@ public class MainServer {
 
         try{
             serverSocket = new ServerSocket(Util.PORTA_SERVER);
-            AcceptIncomingClientsRunnable aicr =
-                    new AcceptIncomingClientsRunnable(serverSocket, clientManagers, this, executor);
-            executor.schedule(aicr, 0, TimeUnit.MILLISECONDS);
+            acceptIncomingClients();
         }catch(Exception e){
             stampa( pref(SERVER_NAME) + "Errore improvviso in MainServer:" );
             e.printStackTrace();
@@ -44,6 +42,14 @@ public class MainServer {
         }
     }
 
+    private void acceptIncomingClients() throws IOException {
+        while(true){
+            Socket socket = serverSocket.accept();
+            String clientName = "CLIENT_" + socket.getInetAddress().getHostAddress();
+            ClientManager clientData = new ClientManager(socket,clientName, this);
+            clientManagers.add(clientData);
+        }
+    }
 
     void broadcast(String str){
         for(ClientManager cm : clientManagers){
@@ -54,5 +60,11 @@ public class MainServer {
 
     public ScheduledThreadPoolExecutor getExecutor() {
         return executor;
+    }
+
+    public void terminate(ClientManager cm) throws IOException {
+        broadcast( pref( MainServer.SERVER_NAME) + "ESCE " + cm.getName() );
+        cm.getSocket().close();
+        clientManagers.remove(cm);
     }
 }

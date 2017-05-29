@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Util {
 
-	public static final int PORTA_SERVER = 4999; 
+	public static final int PORTA_SERVER = 4999;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
 	public static String adesso(){

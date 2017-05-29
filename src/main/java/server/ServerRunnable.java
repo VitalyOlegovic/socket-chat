@@ -2,6 +2,7 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.SocketException;
 
 import static util.Util.pref;
 import static util.Util.stampa;
@@ -24,7 +25,9 @@ public class ServerRunnable implements Runnable {
             if(str!=null){
                 eseguiComando(str);
             }
-        } catch (IOException e) {
+        }catch(SocketException se) {
+            // Non fare nulla
+        }catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -37,6 +40,7 @@ public class ServerRunnable implements Runnable {
 
             // comando uscita singolo thread
             case "/esci":
+                ms.terminate(cm);
                 break;
 
             // comando uscita tutto il server

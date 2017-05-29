@@ -3,10 +3,7 @@ package server;
 import static util.Util.pref;
 import static util.Util.stampa;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +28,9 @@ public class ClientManager {
 		stampa( pref( MainServer.SERVER_NAME) + "ENTRA " + getName() );
 
 		try {
-			input = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
+			InputStream is = socket.getInputStream();
+			InputStreamReader isr = new InputStreamReader( is );
+			input = new BufferedReader( isr );
 			printWriter = new PrintWriter(socket.getOutputStream(), true);
 			mainServer.broadcast( pref( MainServer.SERVER_NAME) + "ENTRA " + getName() );
 			ServerRunnable sr = new ServerRunnable(mainServer,this,  input);
@@ -53,4 +52,8 @@ public class ClientManager {
     public PrintWriter getPrintWriter() {
         return printWriter;
     }
+
+	public Socket getSocket() {
+		return socket;
+	}
 }

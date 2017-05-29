@@ -44,6 +44,10 @@ public class ChatClient {
         while(true){
             String line = scanner.nextLine();
             pw.println(line);
+            if("/esci".equals(line)){
+                System.exit(0);
+            }
+
         }
     }
 
